@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
+import "../style.css";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 export default function Register() {
@@ -33,23 +34,23 @@ export default function Register() {
     }
   };
   return (
-    <div>
+    <div className="register">
       <form onSubmit={registerUser}>
-        <label>Name</label>
+        <label> Name: </label>
         <input
           type="text"
           placeholder="enter name..."
           value={data.name}
           onChange={(e) => setData({ ...data, name: e.target.value })}
         ></input>
-        <label>Email</label>
+        <label> Email: </label>
         <input
           type="email"
           placeholder="enter email..."
           value={data.email}
           onChange={(e) => setData({ ...data, email: e.target.value })}
         ></input>
-        <label>password</label>
+        <label> password: </label>
         <input
           type="password"
           placeholder="enter password..."

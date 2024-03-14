@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
+import "../style.css";
 import { toast } from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
 
@@ -19,7 +20,7 @@ export default function Login() {
         toast.error(data.error);
       } else {
         // set the data to empty
-        
+
         setData({});
         navigate("/dashboard");
       }
@@ -27,16 +28,16 @@ export default function Login() {
   };
 
   return (
-    <div>
+    <div className="login">
       <form onSubmit={loginUser}>
-        <label>Email</label>
+        <label>Email: </label>
         <input
           type="email"
           placeholder="enter email..."
           value={data.email}
           onChange={(e) => setData({ ...data, email: e.target.value })}
         ></input>{" "}
-        <label>password</label>
+        <label> Password: </label>
         <input
           type="password"
           placeholder="enter password..."

@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useState, useEffect } from "react";
-
+import "../style.css";
 import React from "react";
 import axios from "axios";
 import { UserContext } from "../../context/userContext";
@@ -8,22 +8,9 @@ export default function Dashboard() {
   const { user } = useContext(UserContext);
   const [origUrl, setOrigUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
-  // const [allLinks, setAllLinks] = useState(null);
-  let allLinks;
-  let cars = [
-    {
-      color: "purple",
-      type: "minivan",
-      registration: new Date("2017-01-03"),
-      capacity: 7,
-    },
-    {
-      color: "red",
-      type: "station wagon",
-      registration: new Date("2018-03-03"),
-      capacity: 5,
-    },
-  ];
+  const [allLinks, setAllLinks] = useState(null);
+
+
   const create = async (e) => {
     e.preventDefault();
     console.log("in create");
@@ -42,47 +29,69 @@ export default function Dashboard() {
       // show the shorturl
     } catch (error) {}
   };
-  // get all the links for logged in user
-  const getLinks = async () => {
-    const email = user.email;
-    console.log(email);
-    try {
-      const tempAllUrl = await axios.get("/getAllUrl", { email });
-      console.log(tempAllUrl);
 
-      allLinks = tempAllUrl.data;
-      console.log(allLinks);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  // if condition so that it will not call for user=null
-  // because of usecontext it is null in start
-  if (user) {
-    getLinks();
-  }
+  useEffect(() => {
+    const getLinks = async () => {
+      try {
+        const tempAllUrl = await axios.get("/getAllUrl");
+
+        setAllLinks(tempAllUrl.data);
+        console.log(allLinks);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    console.log(allLinks);
+    if (user) getLinks();
+  }, [user]);
+
   return (
-    <div>
+    <div className="Dashboard">
       <h1>Dashboard</h1>
+      <h3>Welcome</h3>
+      {user && <h2>Hi!! {user.name}</h2>}
 
-      {user && <h2>hi!!{user.name}</h2>}
-      <form onSubmit={create}>
-        <label>enter website Link</label>
-        <input
-          type="url"
-          placeholder="enter website"
-          value={origUrl}
-          onChange={(e) => setOrigUrl(e.target.value)}
-        ></input>
-        <button type="submit">create</button>
-      </form>
-      {shortUrl && <h1>{shortUrl}</h1>}
+      <div>
+        <form onSubmit={create}>
+          <label className="enter">Enter the link of website</label>
+          <input
+            type="url"
+            placeholder="enter website"
+            value={origUrl}
+            onChange={(e) => setOrigUrl(e.target.value)}
+          ></input>
+          <button type="submit">create</button>
+        </form>
+      </div>
+
+      {shortUrl && <h3 className="url">{shortUrl}</h3>}
+      <br></br>
+      <br></br>
       {allLinks && (
-        <ul>
-          {allLinks.map((link, index) => (
-            <li key={index}>{link}</li>
-          ))}
-        </ul>
+        <div className="tableDiv">
+          <table id="customers">
+            <thead>
+              <tr>
+                <th>Short url</th>
+                <th>Clicks</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allLinks.map((link) => {
+                return (
+                  <tr key={link.urlId}>
+                    <td>
+                      <a target="_blank" href={link.origUrl}>
+                        {link.shortUrl}
+                      </a>
+                    </td>
+                    <td>{link.clicks}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
