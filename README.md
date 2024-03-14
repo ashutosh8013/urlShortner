@@ -4,3 +4,4 @@ which have following feature:
 2)url shortening
 3)redirecting the short url to original url
 4)link analysis according to user
+since the database is open for all IP address so you can easily clone it and run
