@@ -11,6 +11,10 @@ which have following feature:
 4)link analysis according to user
 
 
-since the database is open for all IP address so you can easily clone it and run
+steps to run this project in your system
+
+add the link to your database in the env file ,i had used mongodb atlas ,you can use the same...
+
+
 
 after you login refesh the page
