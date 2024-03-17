@@ -10,7 +10,6 @@ export default function Dashboard() {
   const [shortUrl, setShortUrl] = useState("");
   const [allLinks, setAllLinks] = useState(null);
 
-
   const create = async (e) => {
     e.preventDefault();
     console.log("in create");
@@ -47,7 +46,7 @@ export default function Dashboard() {
 
   return (
     <div className="Dashboard">
-      <h1>Dashboard</h1>
+      <h1 className="">Dashboard</h1>
       <h3>Welcome</h3>
       {user && <h2>Hi!! {user.name}</h2>}
 

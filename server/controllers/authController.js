@@ -55,7 +55,7 @@ const loginUser = async (req, res) => {
     console.log("after user");
     console.log(user);
     if (!user) {
-      console.log("in if");
+      
       return res.json({
         error: "no user found",
       });

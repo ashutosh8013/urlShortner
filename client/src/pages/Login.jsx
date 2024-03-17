@@ -1,11 +1,14 @@
 import React from "react";
+import { useContext } from "react";
 import { useState } from "react";
 import axios from "axios";
 import "../style.css";
 import { toast } from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/userContext";
 
 export default function Login() {
+  const { user,setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [data, setData] = useState({ email: "", password: "" });
   const loginUser = async (e) => {
@@ -22,6 +25,10 @@ export default function Login() {
         // set the data to empty
 
         setData({});
+        axios.get('/profile').then(({data})=>{
+          setUser(data);
+      })
+
         navigate("/dashboard");
       }
     } catch (error) {}

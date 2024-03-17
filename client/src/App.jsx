@@ -13,6 +13,7 @@ axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.withCredentials = true;
 function App() {
   return (
+    <>
     <UserContextProvider>
       <Navbar></Navbar>
       <Toaster
@@ -23,9 +24,10 @@ function App() {
         <Route path="/" element={<Home></Home>}></Route>
         <Route path="/register" element={<Register></Register>}></Route>
         <Route path="/login" element={<Login></Login>}></Route>
-        <Route path="/dashboard" element={<Dashboard></Dashboard> }></Route>
+        <Route path="/dashboard" element={<Dashboard></Dashboard>}></Route>
       </Routes>
     </UserContextProvider>
+    </>
   );
 }
 import { Form } from "react-router-dom";
