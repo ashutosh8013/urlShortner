@@ -13,8 +13,11 @@ which have following feature:
 
 steps to run this project in your system
 
-add the link to your database in the env file ,i had used mongodb atlas ,you can use the same...
+1) clone it
+2) make a env file in server folder
+3) add
+ MONGO_URL="link for your db"
+JWT_SECRET=secretKeyforjwt
 
 
-
-after you login refesh the page
+i have used mongodb atlas for this, you can use the same
