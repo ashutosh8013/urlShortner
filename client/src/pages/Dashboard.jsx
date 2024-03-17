@@ -80,7 +80,7 @@ export default function Dashboard() {
                 return (
                   <tr key={link.urlId}>
                     <td>
-                      <a target="_blank" href={link.origUrl}>
+                      <a target="_blank" href={link.shortUrl}>
                         {link.shortUrl}
                       </a>
                     </td>
