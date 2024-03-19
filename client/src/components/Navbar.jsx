@@ -29,7 +29,7 @@ export default function Navbar() {
                 {!user?(<Link to="/login">login</Link>):(<Link onClick={logout} to="/">logout</Link>)}
               </li>
               <li className="hover:underline  underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-2 md:px-5">
-                <Link to="/about">donate</Link>
+                <Link to="/donate">donate</Link>
               </li>
             </ul>
           </div>
