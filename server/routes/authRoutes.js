@@ -10,6 +10,7 @@ const {
   handleShort,
   getUrl,
   getAllUrl,
+  deleteLink,
 } = require("../controllers/authController");
 // middleware
 router.use(cors({ credentials: true, origin: `http://localhost:5173` }));
@@ -20,7 +21,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/short", handleShort);
 router.get("/profile", getProfile);
-
+router.delete("/delete",deleteLink);
 router.get("/:urlId", getUrl);
 
 module.exports = router;

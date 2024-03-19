@@ -230,6 +230,22 @@ const getAllUrl = async (req, res) => {
     return res.status(404).json(null);
   }
 };
+
+// delete the link
+
+const deleteLink = async (req, res) => {
+  console.log("in delete");
+  const { urlId } = req.body;
+  console.log(urlId);
+  try {
+    await Url.deleteOne({ urlId })
+      .then(() => res.status(200).json())
+      .catch((e) => res.status(500).json(e));
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 module.exports = {
   test,
   registerUser,
@@ -238,4 +254,5 @@ module.exports = {
   handleShort,
   getUrl,
   getAllUrl,
+  deleteLink,
 };

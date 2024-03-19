@@ -7,7 +7,7 @@ export default function Navbar() {
   const { user,setUser } = useContext(UserContext);
  const logout=function(){
   document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  setuser(null);
+  setUser(null);
 
  }
   return (
@@ -20,7 +20,7 @@ export default function Navbar() {
             </h1>
             <ul className="flex justify-center my-4  items-center text-sm md:text-[18px] font-bold  md:px-10">
               <li className="hover:underline  underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-2 md:px-5">
-                <Link to="/">Home</Link>
+                {!user?(<Link to="/">Home</Link>):(<Link to="/dashboard">Dashboard</Link>)}
               </li>
               <li className="hover:underline  underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-2 md:px-5">
                 <Link to="/register">register</Link>
@@ -29,7 +29,7 @@ export default function Navbar() {
                 {!user?(<Link to="/login">login</Link>):(<Link onClick={logout} to="/">logout</Link>)}
               </li>
               <li className="hover:underline  underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-2 md:px-5">
-                <Link to="/about">about</Link>
+                <Link to="/about">donate</Link>
               </li>
             </ul>
           </div>

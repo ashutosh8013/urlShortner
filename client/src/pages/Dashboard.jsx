@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { useState, useEffect } from "react";
 import "../style.css";
+import toast from "react-hot-toast";
 import React from "react";
 import axios from "axios";
 import { UserContext } from "../../context/userContext";
@@ -9,10 +10,27 @@ export default function Dashboard() {
   const { user } = useContext(UserContext);
   const [origUrl, setOrigUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
-  const [allLinks, setAllLinks] = useState(null);
+  const [allLinks, setAllLinks] = useState();
   const [custom, setCustom] = useState("");
   const [error, setError] = useState(false);
 
+  // delete the record
+  const deleteRecord = async (e) => {
+    // console.log(e);
+    const urlId = e.urlId;
+    console.log(urlId);
+    const res = await axios
+      .delete("/delete", {
+        data: { urlId },
+      })
+      .then(() => {
+        toast.success("link deleted successfuly");
+        setAllLinks(() => allLinks.filter((links) => links.urlId != e.urlId));
+      })
+      .catch(() => {
+        toast.error("error in deleting");
+      });
+  };
   const create = async (e) => {
     setError(false);
     e.preventDefault();
@@ -25,9 +43,11 @@ export default function Dashboard() {
         origUrl,
         email,
         custom,
-      })
-      
+      });
+
       setShortUrl(url.data.shortUrl);
+
+      // console.log(allLinks);
 
       // show the shorturl
     } catch (error) {
@@ -41,14 +61,15 @@ export default function Dashboard() {
     const getLinks = async () => {
       try {
         const tempAllUrl = await axios.get("/getAllUrl");
-
+        // console.log(typeof tempAllUrl.data);
+        // console.log(tempAllUrl.data);
         setAllLinks(tempAllUrl.data);
-        console.log(allLinks);
+        // console.log(allLinks);
       } catch (e) {
         console.log(e);
       }
     };
-    console.log(allLinks);
+    // console.log(allLinks);
     if (user) getLinks();
   }, [user]);
 
@@ -70,7 +91,7 @@ export default function Dashboard() {
               required
               onChange={(e) => setOrigUrl(e.target.value)}
             ></input>
-            <h1>enter custom name of url</h1>
+            <h1>enter custom name of url or leave empty</h1>
             <input
               type="text"
               className="bg-red-400"
@@ -79,6 +100,7 @@ export default function Dashboard() {
                 setCustom(e.target.value);
               }}
             ></input>
+            <br></br>
             <button type="submit">create</button>
           </form>
         </div>
@@ -94,6 +116,7 @@ export default function Dashboard() {
                 <tr>
                   <th>Short url</th>
                   <th>Clicks</th>
+                  <th>delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -106,6 +129,14 @@ export default function Dashboard() {
                         </a>
                       </td>
                       <td>{link.clicks}</td>
+                      <td
+                        key={link.urlId}
+                        onClick={() => {
+                          deleteRecord(link);
+                        }}
+                      >
+                        delete
+                      </td>
                     </tr>
                   );
                 })}
