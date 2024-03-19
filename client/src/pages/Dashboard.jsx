@@ -4,13 +4,17 @@ import "../style.css";
 import React from "react";
 import axios from "axios";
 import { UserContext } from "../../context/userContext";
+import Error from "./error";
 export default function Dashboard() {
   const { user } = useContext(UserContext);
   const [origUrl, setOrigUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
   const [allLinks, setAllLinks] = useState(null);
+  const [custom, setCustom] = useState("");
+  const [error, setError] = useState(false);
 
   const create = async (e) => {
+    setError(false);
     e.preventDefault();
     console.log("in create");
     try {
@@ -20,14 +24,18 @@ export default function Dashboard() {
       const url = await axios.post("/short", {
         origUrl,
         email,
-      });
-
-      console.log(url.data.shortUrl);
+        custom,
+      })
+      
       setShortUrl(url.data.shortUrl);
 
       // show the shorturl
-    } catch (error) {}
+    } catch (error) {
+      setError(true);
+    }
   };
+
+  // create custom url
 
   useEffect(() => {
     const getLinks = async () => {
@@ -44,54 +52,68 @@ export default function Dashboard() {
     if (user) getLinks();
   }, [user]);
 
-  return (
-    <div className="Dashboard">
-      <h1 className="">Dashboard</h1>
-      <h3>Welcome</h3>
-      {user && <h2>Hi!! {user.name}</h2>}
-
+  if (user)
+    return (
       <div>
-        <form onSubmit={create}>
-          <label className="enter">Enter the link of website</label>
-          <input
-            type="url"
-            placeholder="enter website"
-            value={origUrl}
-            onChange={(e) => setOrigUrl(e.target.value)}
-          ></input>
-          <button type="submit">create</button>
-        </form>
-      </div>
+        <h1>Dashboard</h1>
+        <h3>Welcome</h3>
+        {user && <h2>Hi!! {user.name}</h2>}
 
-      {shortUrl && <h3 className="url">{shortUrl}</h3>}
-      <br></br>
-      <br></br>
-      {allLinks && (
-        <div className="tableDiv">
-          <table id="customers">
-            <thead>
-              <tr>
-                <th>Short url</th>
-                <th>Clicks</th>
-              </tr>
-            </thead>
-            <tbody>
-              {allLinks.map((link) => {
-                return (
-                  <tr key={link.urlId}>
-                    <td>
-                      <a target="_blank" href={link.shortUrl}>
-                        {link.shortUrl}
-                      </a>
-                    </td>
-                    <td>{link.clicks}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div>
+          <h1>create url</h1>
+          <form onSubmit={create}>
+            <label>Enter the link of website</label>
+            <input
+              type="url"
+              placeholder="enter website"
+              value={origUrl}
+              required
+              onChange={(e) => setOrigUrl(e.target.value)}
+            ></input>
+            <h1>enter custom name of url</h1>
+            <input
+              type="text"
+              className="bg-red-400"
+              value={custom}
+              onChange={(e) => {
+                setCustom(e.target.value);
+              }}
+            ></input>
+            <button type="submit">create</button>
+          </form>
         </div>
-      )}
-    </div>
-  );
+        <div></div>
+        {shortUrl && <h3>{shortUrl}</h3>}
+        {error && <h2>already exist</h2>}
+        <br></br>
+        <br></br>
+        {allLinks && (
+          <div>
+            <table id="customers">
+              <thead>
+                <tr>
+                  <th>Short url</th>
+                  <th>Clicks</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allLinks.map((link) => {
+                  return (
+                    <tr key={link.urlId}>
+                      <td>
+                        <a target="_blank" href={link.shortUrl}>
+                          {link.shortUrl}
+                        </a>
+                      </td>
+                      <td>{link.clicks}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    );
+  else return <>not found</>;
 }

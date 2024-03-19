@@ -1,6 +1,11 @@
 const User = require("../models/user");
 const Url = require("../models/Url");
-const { hashPassword, comparePassword } = require("../helpers/auth");
+const {
+  hashPassword,
+  comparePassword,
+  decimalToBase62,
+  base62ToDecimal,
+} = require("../helpers/auth");
 const jwt = require("jsonwebtoken");
 var uniqid = require("uniqid");
 
@@ -48,14 +53,13 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log("in controller");
-    console.log(email, password);
+    // console.log("in controller");
+    // console.log(email, password);
     // check if user exists
     const user = await User.findOne({ email });
-    console.log("after user");
-    console.log(user);
+    // console.log("after user");
+    // console.log(user);
     if (!user) {
-      
       return res.json({
         error: "no user found",
       });
@@ -98,36 +102,90 @@ const getProfile = (req, res) => {
 // handle short
 
 const handleShort = async (req, res) => {
-  const { origUrl, email } = req.body;
-  // base url
-  console.log("int the call");
-  const base = "http://localhost:8000";
-  const urlId = uniqid();
-  if (origUrl) {
+  const { origUrl, email, custom } = req.body;
+
+  if (custom) {
     try {
-      // import schema
-      let url = await Url.findOne({ origUrl });
+      const url = await Url.findOne({ urlId: custom });
       if (url) {
-        res.json(url);
+        res.status(400).json("already exit");
       } else {
-        const shortUrl = `${base}/${urlId}`;
-        console.log(shortUrl);
-        url = new Url({
+        const shortUrl = `http://localhost:8000/${custom}`;
+        console.log("new url");
+        const newUrl = new Url({
           origUrl,
-          shortUrl,
-          urlId,
-          data: new Date(),
           email,
+          data: new Date(),
+          urlId: custom,
+          shortUrl,
         });
-        await url.save();
-        res.json(url);
+        await newUrl.save();
+        res.json(newUrl);
       }
-    } catch (error) {
-      console.log(err);
-      res.status(500).json("server error");
+    } catch (e) {
+      console.log(e);
     }
   } else {
-    res.status(400).json("invalid original url");
+    let randomNumber = Math.floor(Math.random() * 1000000000000 + 1);
+    let urlId = decimalToBase62(randomNumber);
+    // base url
+    // console.log("int the call");
+    while (true) {
+      // check if that urlId already exit in db or not
+      let check = await Url.findOne({ urlId });
+      if (!check) break;
+      else {
+        // if exist create a new urlId
+        randomNumber = Math.floor(Math.random() * 1000000000000 + 1);
+        urlId = decimalToBase62(randomNumber);
+      }
+    }
+
+    const base = "http://localhost:8000";
+    // const urlId = uniqid();
+    // validate the original url left
+    if (origUrl) {
+      try {
+        // if the same user have entered the same url
+        let url = await Url.findOne({ origUrl, email });
+        //  if different user have created the same url
+        let url2 = await Url.findOne({ origUrl });
+        if (url) {
+          console.log("in if");
+          res.json(url);
+        } else if (url2) {
+          // extracting necessary feilds from url2 and creating a new entery
+          const shortUrl = url2.shortUrl;
+          const urlId = url2.urlId;
+          url = new Url({
+            origUrl,
+            shortUrl,
+            urlId,
+            date: new Date(),
+            email,
+          });
+          await url.save();
+          res.json(url);
+        } else {
+          const shortUrl = `${base}/${urlId}`;
+          console.log(shortUrl);
+          url = new Url({
+            origUrl,
+            shortUrl,
+            urlId,
+            data: new Date(),
+            email,
+          });
+          await url.save();
+          res.json(url);
+        }
+      } catch (error) {
+        console.log(error);
+        res.status(500).json("server error");
+      }
+    } else {
+      res.status(400).json("invalid original url");
+    }
   }
 };
 
@@ -153,16 +211,14 @@ const getUrl = async (req, res) => {
 };
 // getting all urls that a specific user had created
 const getAllUrl = async (req, res) => {
-  
   console.log("in getAllUrl");
-  
   try {
     const { token } = req.cookies;
     let temp;
     if (token) {
       jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
         if (err) throw err;
-        temp=user;
+        temp = user;
       });
     } else {
       res.json(null);
