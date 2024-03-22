@@ -8,7 +8,7 @@ import axios from "axios";
 import { Toaster } from "react-hot-toast";
 import { UserContextProvider } from "../context/userContext";
 import Dashboard from "./pages/Dashboard";
-
+import Error from "./pages/error";
 axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.withCredentials = true;
 function App() {
@@ -26,6 +26,7 @@ function App() {
         <Route path="/register" element={<Register></Register>}></Route>
         <Route path="/login" element={<Login></Login>}></Route>
         <Route path="/dashboard" element={<Dashboard></Dashboard>}></Route>
+         <Route path="*" element={<Error></Error>}></Route>
       </Routes>
     </UserContextProvider>
     </>

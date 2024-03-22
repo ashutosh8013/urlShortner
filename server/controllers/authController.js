@@ -30,7 +30,7 @@ const registerUser = async (req, res) => {
         error: "password is required and should be at leat 6 in size",
       });
     }
-    // check emaill
+    // check email
     const exist = await User.findOne({ email });
     if (exist) {
       return res.json({
@@ -53,12 +53,10 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    // console.log("in controller");
-    // console.log(email, password);
+
     // check if user exists
     const user = await User.findOne({ email });
-    // console.log("after user");
-    // console.log(user);
+
     if (!user) {
       return res.json({
         error: "no user found",
@@ -84,16 +82,14 @@ const loginUser = async (req, res) => {
         error: "passord don't match",
       });
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log("error in login line 86");
+  }
 };
-
+// this function will run when the user login and redirect to the dashboard
 const getProfile = (req, res) => {
-  const { token } = req.cookies;
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
-      if (err) throw err;
-      res.json(user);
-    });
+  if (req.body.user) {
+    res.json(req.body.user);
   } else {
     res.json(null);
   }
@@ -102,6 +98,8 @@ const getProfile = (req, res) => {
 // handle short
 
 const handleShort = async (req, res) => {
+  // check if user object is present in req.body or not
+  if (!req.body.user) res.status(401).json("not a valid user");
   const { origUrl, email, custom } = req.body;
 
   if (custom) {
@@ -151,7 +149,6 @@ const handleShort = async (req, res) => {
         //  if different user have created the same url
         let url2 = await Url.findOne({ origUrl });
         if (url) {
-          console.log("in if");
           res.json(url);
         } else if (url2) {
           // extracting necessary feilds from url2 and creating a new entery
@@ -212,37 +209,63 @@ const getUrl = async (req, res) => {
 // getting all urls that a specific user had created
 const getAllUrl = async (req, res) => {
   console.log("in getAllUrl");
-  try {
-    const { token } = req.cookies;
-    let temp;
-    if (token) {
-      jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
-        if (err) throw err;
-        temp = user;
-      });
-    } else {
-      res.json(null);
+  if (req.body.user) {
+    try {
+      const temp = req.body.user;
+      const allLinks = await Url.find({ email: temp.email });
+      return res.json(allLinks);
+    } catch (error) {
+      console.log("error in fetting all links for user");
+      return res.status(404).json(null);
     }
-    const allLinks = await Url.find({ email: temp.email });
-    return res.json(allLinks);
-  } catch (error) {
-    console.log("error in fetting all links for user");
-    return res.status(404).json(null);
+  } else {
+    res.status(401).json("unauthorized");
   }
 };
 
 // delete the link
 
 const deleteLink = async (req, res) => {
-  console.log("in delete");
-  const { urlId } = req.body;
-  console.log(urlId);
+  // if we got user from the checkUser middleware
+  if (req.body.user) {
+    console.log("in delete");
+    const { urlId } = req.body;
+    console.log(urlId);
+    try {
+      await Url.deleteOne({ urlId })
+        .then(() => res.status(200).json())
+        .catch((e) => res.status(404).json(e));
+    } catch (e) {
+      console.log(e);
+    }
+  } else {
+    res.status(401).json(null);
+  }
+};
+
+// check user is logged in or not
+const checkUser = async (req, res, next) => {
+  console.log("in check");
+
   try {
-    await Url.deleteOne({ urlId })
-      .then(() => res.status(200).json())
-      .catch((e) => res.status(500).json(e));
-  } catch (e) {
-    console.log(e);
+    const { token } = req.cookies;
+    let temp;
+    if (token) {
+      jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
+        if (err) {
+          res.status(401).json("unauthorized");
+        }
+        temp = user;
+        req.body.user = temp;
+
+        next();
+      });
+    } else {
+      res.status(401).json("unauthorized");
+    }
+  } catch (error) {
+    console.log("error while login");
+    return res.status(404).json(null);
   }
 };
 
@@ -255,4 +278,5 @@ module.exports = {
   getUrl,
   getAllUrl,
   deleteLink,
+  checkUser,
 };
