@@ -5,6 +5,7 @@ import Home from "../src/pages/Home";
 import Register from "../src/pages/Register";
 import Login from "./pages/Login";
 import axios from "axios";
+import Analysis from "./pages/Analysis";
 import { Toaster } from "react-hot-toast";
 import { UserContextProvider } from "../context/userContext";
 import Dashboard from "./pages/Dashboard";
@@ -26,7 +27,9 @@ function App() {
         <Route path="/register" element={<Register></Register>}></Route>
         <Route path="/login" element={<Login></Login>}></Route>
         <Route path="/dashboard" element={<Dashboard></Dashboard>}></Route>
+         <Route path="/Analysis" element={<Analysis></Analysis>}></Route>
          <Route path="*" element={<Error></Error>}></Route>
+         
       </Routes>
     </UserContextProvider>
     </>

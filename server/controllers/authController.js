@@ -131,9 +131,6 @@ const getProfile = (req, res) => {
 // handle short
 
 const handleShort = async (req, res) => {
-  
-
-
   // check if user object is present in req.body or not
   if (!req.body.user) res.status(401).json("not a valid user");
   const { origUrl, email, custom } = req.body;
@@ -226,6 +223,7 @@ const handleShort = async (req, res) => {
 
 // handle get request for shortUrl
 const getUrl = async (req, res) => {
+  console.log(req.useragent);
   try {
     const url = await Url.findOne({ urlId: req.params.urlId });
     if (url) {
@@ -236,6 +234,33 @@ const getUrl = async (req, res) => {
           lastVisit: new Date(),
         }
       );
+
+      if (req.useragent.isMobile) {
+        await Url.updateOne(
+          {
+            urlId: req.params.urlId,
+          },
+          { $inc: { moblie: 1 } }
+        );
+      } else if (req.useragent.isDesktop) {
+        await Url.updateOne(
+          {
+            urlId: req.params.urlId,
+          },
+          { $inc: { desktop: 1 } }
+        );
+      } else if (
+        req.useragent.isTablet ||
+        req.useragent.isiPad ||
+        req.useragent.isSmartTV
+      ) {
+        await Url.updateOne(
+          {
+            urlId: req.params.urlId,
+          },
+          { $inc: { otherDevice: 1 } }
+        );
+      }
       return res.redirect(url.origUrl);
     } else {
       res.status(404).json("not found");
@@ -325,6 +350,20 @@ const checkUser = async (req, res, next) => {
   }
 };
 
+// get info for a url
+const getInfo=async(req,res)=>{
+const url=req.body.url;
+const data= await Url.findOne({shortUrl:url});
+if(data.email==req.body.user.email)
+{
+res.json(data);
+}
+else
+{
+  res.status(401).json({error:"unauthorized"});
+}
+}
+
 module.exports = {
   test,
   registerUser,
@@ -336,4 +375,5 @@ module.exports = {
   deleteLink,
   checkUser,
   googleLogin,
+  getInfo
 };

@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { useState, useEffect } from "react";
 import "../style.css";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import React from "react";
 import axios from "axios";
@@ -14,6 +15,15 @@ export default function Dashboard() {
   const [allLinks, setAllLinks] = useState();
   const [custom, setCustom] = useState("");
   const [error, setError] = useState(false);
+  const navigate = useNavigate();
+  //redirecting to the analysis of the url
+  const getAnalysis = (e) => {
+    console.log("in getAnalysis");
+    const url = e;
+    console.log(url);
+    navigate("/Analysis", { state: url });
+    
+  };
 
   // delete the record
   const deleteRecord = async (e) => {
@@ -143,6 +153,9 @@ export default function Dashboard() {
           </div>
           <div class="flex items-center justify-center ">
             <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
+              <p class="mx-auto max-w-2xl text-3xl font-bold tracking-tight pb-7 text-white  sm:text-4xl">
+                click on the link to know more
+              </p>
               <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
                 {allLinks && (
                   <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -167,10 +180,13 @@ export default function Dashboard() {
                             key={link.urlId}
                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                           >
-                            <td class="py-4 px-2 sm:px-6">
-                              <a target="_blank" href={link.shortUrl}>
-                                {link.shortUrl}
-                              </a>
+                            <td
+                              class="py-4 px-2 sm:px-6 hover:cursor-pointer"
+                              onClick={() => {
+                                getAnalysis(link);
+                              }}
+                            >
+                              {link.shortUrl}
                             </td>
 
                             <td class="py-4 px-2 sm:px-9">{link.clicks}</td>

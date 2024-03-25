@@ -31,6 +31,18 @@ const UrlSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  desktop:{
+    type:Number,
+    default:0
+  },
+  mobile:{
+    type:Number,
+    default:0
+  },
+  otherDevice:{
+    type:Number,
+    default:0
+  }
 });
 const UserModel = mongoose.model("Url", UrlSchema);
 module.exports = UserModel;

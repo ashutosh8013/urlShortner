@@ -12,7 +12,8 @@ const {
   getAllUrl,
   deleteLink,
   checkUser,
-  googleLogin
+  googleLogin,
+  getInfo
 } = require("../controllers/authController");
 // middleware
 router.use(cors({ credentials: true, origin: `http://localhost:5173` }));
@@ -31,5 +32,7 @@ router.get("/profile", getProfile);
 router.delete("/delete", deleteLink);
 router.get("/:urlId", getUrl);
 router.post('/googleLogin',googleLogin)
+router.get('getInfo',checkUser);
+router.get('/getInfo',getInfo);
 
 module.exports = router;
