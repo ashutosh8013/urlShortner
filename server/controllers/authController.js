@@ -240,7 +240,7 @@ const getUrl = async (req, res) => {
           {
             urlId: req.params.urlId,
           },
-          { $inc: { moblie: 1 } }
+          { $inc: { mobile: 1 } }
         );
       } else if (req.useragent.isDesktop) {
         await Url.updateOne(

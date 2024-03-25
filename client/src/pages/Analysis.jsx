@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
+import PieChart from "./PieChart";
 export default function Analysis({ url }) {
   const location = useLocation();
   const data = location.state;
@@ -56,7 +57,7 @@ export default function Analysis({ url }) {
   return (
     <>
       <div class="flex items-center justify-center bg-gray-800 p-4 h-lvh">
-        <div class="flex flex-col max-w-7xl w-full md:w-[70%] ">
+        <div class="flex flex-col mt-11 pt-8 sm:mt-0 sm:pt-0 max-w-7xl w-full md:w-[70%] relative ">
           <div class="bg-gray-700 shadow-lg rounded-xl flex items-start h-32 w-[90%] lg:w-1/2 justify-center py-4 px-8 mx-4 my-2">
             <div class="flex items-center justify-start w-full">
               <div class="flex-col w-[85%]">
@@ -78,6 +79,7 @@ export default function Analysis({ url }) {
               </div>
             </div>
           </div>
+
           <div class="bg-gray-700 shadow-lg rounded-xl flex items-start h-32 w-[90%] lg:w-1/2 justify-center py-4 px-8 mx-4 my-2">
             <div class="flex items-center justify-start w-full">
               <div class="flex-col w-[85%]">
@@ -92,7 +94,9 @@ export default function Analysis({ url }) {
                 </div>
                 <div class="class pb-3 flex items-center overflow-hidden">
                   <div class="text-3xl  font-bold text-gray-200">
-                    {data.shortUrl}
+                    <a className="hover:cursor-pointer" href={data.shortUrl}>
+                      {data.shortUrl}
+                    </a>
                   </div>
                   <div class="flex items-center justify-between mx-2 px-0.5 py-0.5 rounded-xl text-green-500 font-medium "></div>
                 </div>
@@ -130,7 +134,17 @@ export default function Analysis({ url }) {
                 </div>
               </div>
             </div>
-          
+
+            <div className="sm:absolute sm:bottom-40 sm:right-10  sm:pr-25 sm: mr-12">
+              <p class="text-3xl pl-16 font-bold text-gray-200">
+                clicks-{data.clicks}
+              </p>
+              <PieChart
+                desktop={data.desktop}
+                mobile={data.mobile}
+                otherDevice={data.otherDevice}
+              ></PieChart>
+            </div>
           </div>
         </div>
       </div>
