@@ -173,7 +173,7 @@ export default function Dashboard() {
                               </a>
                             </td>
 
-                            <td class="py-4 px-2 sm:px-6">{link.clicks}</td>
+                            <td class="py-4 px-2 sm:px-9">{link.clicks}</td>
                             <td
                               class="py-4 px-2 sm:px-6 "
                               key={link.urlId}
@@ -199,5 +199,10 @@ export default function Dashboard() {
         </div>
       </>
     );
-  else return <>not found</>;
+  else
+    return (
+      <>
+        <Error></Error>
+      </>
+    );
 }

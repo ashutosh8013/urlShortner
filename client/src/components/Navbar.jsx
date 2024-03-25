@@ -7,6 +7,7 @@ export default function Navbar() {
   const { user, setUser } = useContext(UserContext);
   const logout = function () {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "googleToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     setUser(null);
   };
   return (
@@ -32,19 +33,19 @@ export default function Navbar() {
                 )}
               </li>
               <li className="hover:underline  underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-2 md:px-5">
-                <Link to="/register">register</Link>
+                <Link to="/register">Register</Link>
               </li>
               <li className="hover:underline  underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-2 md:px-5">
                 {!user ? (
-                  <Link to="/login">login</Link>
+                  <Link to="/login">Login</Link>
                 ) : (
                   <Link onClick={logout} to="/">
-                    logout
+                    Logout
                   </Link>
                 )}
               </li>
               <li className="hover:underline  underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-2 md:px-5">
-                <Link to="/donate">donate</Link>
+                <Link to="/donate">Donate</Link>
               </li>
             </ul>
           </div>

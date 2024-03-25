@@ -1,7 +1,31 @@
 import React from "react";
 import "../style.css";
-
+import { useState } from "react";
 export default function Home() {
+  const [result, setResult] = React.useState("");
+  // const [data, setData] = useState({ email: "", name: "",number:"",subject:"",message:"" });
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    setResult("Sending....");
+    const formData = new FormData(event.target);
+
+    formData.append("access_key", "7fcb203b-2ec5-4960-82fc-e221c610f97f");
+
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setResult("message sended Successfully");
+      event.target.reset();
+    } else {
+      console.log("Error", data);
+      setResult(data.message);
+    }
+  };
   return (
     <>
       <div>
@@ -44,9 +68,14 @@ export default function Home() {
               </a>
             </div>
             <div className="flex mt-10 space-x-5">
-              <button className="bg-white text-blue-600 px-6 py-2 hover:brightness-105 font-semibold">
-                Learn more
-              </button>
+              <a
+                target="_blank"
+                href="https://dzone.com/articles/how-a-url-shortening-application-works"
+              >
+                <button className="bg-white text-blue-600 px-6 py-2 hover:brightness-105 font-semibold">
+                  Learn more
+                </button>
+              </a>
               <button className="bg-blue-900 text-white border-2 border-white px-6 py-2 hover:brightness-105 font-semibold">
                 <a href="#contact">Contact Me</a>
               </button>
@@ -86,7 +115,7 @@ export default function Home() {
             {/* <!-- Feature 2 --> */}
             <div className="md:p-8 lg:p-14 md:border-l md:border-gray-200 flex flex-col justify-center items-center">
               <div className="w-14 h-14 rounded-full bg-teal-200 flex justify-center items-center">
-                <i className="fa-solid fa-truck-fast text-3xl text-gray-900"></i>
+                <i className="fa-solid fa-lock text-3xl text-gray-900"></i>
               </div>
               <h3 className="mt-12 text-xl font-bold text-gray-900">
                 User Registration and Authentication
@@ -165,52 +194,58 @@ export default function Home() {
         </div>
         <div className="bg-white h-auto flex justify-center">
           <div className="bg-white shadow-lg -mt-40 md:w-1/2 grid lg:flex justify-center">
-            <div className="w-3/4 lg:w-2/3 ">
-              <div className="text-lg font-medium text-blue-600 m-6 ">
-                Drop a Message
-              </div>
-              <div className=" flex lg:flex-row flex-col">
-                <div className="m-6">
-                  <p className="text-sm text-stone-400">Full Name</p>{" "}
-                  <input className="border-b-2 border-stone-400 text-stone-400 w-36" />
-                  <p className="text-sm text-stone-400 mt-6">E-mail</p>{" "}
-                  <input className="border-b-2 border-stone-400 text-stone-400 w-36" />
+            <form onSubmit={onSubmit}>
+              <div className="w-3/4 lg:w-2/3 ">
+                <div className="text-lg font-medium text-blue-600 m-6 ">
+                  Drop a Message
+                </div>
+                <div className=" flex lg:flex-row flex-col">
+                  <div className="m-6">
+                    <p className="text-sm text-stone-400">Full Name</p>{" "}
+                    <input
+                      type="text"
+                      name="name"
+                      className="border-b-2 border-stone-400 text-stone-400 w-36"
+                    />
+                    <p className="text-sm text-stone-400 mt-6">E-mail</p>{" "}
+                    <input
+                      type="email" name="email"
+                      className="border-b-2 border-stone-400 text-stone-400 w-36"
+                    />
+                  </div>
+                  <div className="m-6 ">
+                    <p className="text-sm text-stone-400">Phone</p>{" "}
+                    <input type="text" name="number" className="border-b-2 border-stone-400 text-stone-400 w-36" />
+                    <p className="text-sm text-stone-400 mt-6">Subject</p>{" "}
+                    <input type="text" name="subject" className="border-b-2 border-stone-400 text-stone-400 w-36" />
+                  </div>
                 </div>
                 <div className="m-6 ">
-                  <p className="text-sm text-stone-400">Phone</p>{" "}
-                  <input className="border-b-2 border-stone-400 text-stone-400 w-36" />
-                  <p className="text-sm text-stone-400 mt-6">Subject</p>{" "}
-                  <input className="border-b-2 border-stone-400 text-stone-400 w-36" />
+                  <p className="text-sm text-stone-400 mt-6 ">Message</p>{" "}
+                  <input type="text" name="message" className="border-b-2 border-stone-400 text-stone-400 w-36" />
+                  <button type="submit">
+                    {" "}
+                    <div className="m-4 mt-6 pl-4 pt-1 pb-1 pr-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-3xl text-white font-medium w-36 ">
+                      Send Message
+                    </div>
+                  </button>
                 </div>
               </div>
-              <div className="m-6 ">
-                <p className="text-sm text-stone-400 mt-6 ">Message</p>{" "}
-                <input className="border-b-2 border-stone-400 text-stone-400 w-36" />
-                <div className="m-4 mt-6 pl-4 pt-1 pb-1 pr-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-3xl text-white font-medium w-36 ">
-                  Send Message
-                </div>
-              </div>
-            </div>
+            </form>
+            <span>{result}</span>
             <div className="lg:w-1/3 bg-green-500 ">
               <div className="text-white m-6 font-medium">
                 {" "}
                 Contact Information{" "}
               </div>
-              <div className="text-white m-6 text-sm flex">
-                <ion-icon name="location-sharp" className="m-2"></ion-icon>
-                <div> 4329 Travis Street, Red Fort L.A., 34950 </div>
-              </div>
+
               <div className="text-white m-6 text-sm flex">
                 <ion-icon name="call-outline" className="m-2"></ion-icon>
-                <div> +1 987-6543-210 </div>
+                <div> +91 9667644535</div>
               </div>
               <div className="text-white m-6 text-sm flex">
                 <ion-icon name="mail-outline" className="m-2"></ion-icon>
-                <div> admin@tailwind.org </div>
-              </div>
-              <div className="text-white m-6 text-sm flex">
-                <ion-icon name="globe-outline" className="m-2"></ion-icon>
-                <div> www.tailwind.org </div>
+                <div> ashutoshjha867@gmail.com</div>
               </div>
             </div>
           </div>

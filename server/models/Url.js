@@ -1,5 +1,5 @@
-const mongoose=require('mongoose');
-const {Schema}=mongoose
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const UrlSchema = new mongoose.Schema({
   urlId: {
@@ -19,15 +19,18 @@ const UrlSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
-  date: {
-    type: String,
-    default: Date.now,
+  createdDate: {
+    type: Date,
+    default: new Date(),
   },
-  email:{
+  lastVisit: {
+    type: Date,
+    default: new Date(),
+  },
+  email: {
     type: String,
-    required:true
-    
-  }
+    required: true,
+  },
 });
-const UserModel=mongoose.model('Url',UrlSchema);
-module.exports=UserModel;
+const UserModel = mongoose.model("Url", UrlSchema);
+module.exports = UserModel;

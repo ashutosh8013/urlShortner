@@ -1,5 +1,7 @@
 const User = require("../models/user");
 const Url = require("../models/Url");
+const Variable = require("../models/var");
+const { jwtDecode } = require("jwt-decode");
 const {
   hashPassword,
   comparePassword,
@@ -49,6 +51,33 @@ const registerUser = async (req, res) => {
     console.log(error);
   }
 };
+
+// when logged in with google
+const googleLogin = async (req, res) => {
+  const token = req.body.e.credential;
+  try {
+    console.log(token);
+    const credentiaResponseDecode = jwtDecode(token);
+    // console.log(credentiaResponseDecode);
+    console.log("after");
+    const { email, name } = credentiaResponseDecode;
+    console.log(email, name);
+    const user = await User.findOne({ email });
+    console.log(user);
+    if (user) {
+      res.cookie("googleToken", token).json(user);
+    } else {
+      const user = await User.create({
+        name,
+        email,
+      });
+      return res.cookie("googleToken", token).json(user);
+    }
+  } catch (e) {
+    res.json({ error: "error in login" });
+  }
+};
+
 // login endpoint
 const loginUser = async (req, res) => {
   try {
@@ -64,6 +93,10 @@ const loginUser = async (req, res) => {
     }
 
     //check if password match
+    if (!user.password)
+      return res.json({
+        error: "logged in from google",
+      });
     const match = await comparePassword(password, user.password);
 
     if (match) {
@@ -98,6 +131,9 @@ const getProfile = (req, res) => {
 // handle short
 
 const handleShort = async (req, res) => {
+  
+
+
   // check if user object is present in req.body or not
   if (!req.body.user) res.status(401).json("not a valid user");
   const { origUrl, email, custom } = req.body;
@@ -113,7 +149,7 @@ const handleShort = async (req, res) => {
         const newUrl = new Url({
           origUrl,
           email,
-          data: new Date(),
+          createdDate: new Date(),
           urlId: custom,
           shortUrl,
         });
@@ -124,58 +160,60 @@ const handleShort = async (req, res) => {
       console.log(e);
     }
   } else {
-    let randomNumber = Math.floor(Math.random() * 1000000000000 + 1);
+    // if the same user have entered the same url
+    let url = await Url.findOne({ origUrl, email });
+
+    if (url) {
+      res.json(url);
+    }
+    let randomNumber;
+    const counter = await Variable.findOne({ name: "counter" });
+    if (counter) {
+      await Variable.updateOne(
+        { name: "counter" },
+        {
+          $inc: { value: 1 },
+        }
+      );
+      randomNumber = counter.value;
+    } else {
+      const counter = await Variable.create({
+        name: "counter",
+        value: 1000,
+      });
+      randomNumber = 1000;
+    }
+
     let urlId = decimalToBase62(randomNumber);
     // base url
     // console.log("int the call");
-    while (true) {
-      // check if that urlId already exit in db or not
-      let check = await Url.findOne({ urlId });
-      if (!check) break;
-      else {
-        // if exist create a new urlId
-        randomNumber = Math.floor(Math.random() * 1000000000000 + 1);
-        urlId = decimalToBase62(randomNumber);
-      }
-    }
+    // while (true) {
+    //   // check if that urlId already exit in db or not
+    //   let check = await Url.findOne({ urlId });
+    //   if (!check) break;
+    //   else {
+    //     // if exist create a new urlId
+    //     randomNumber = Math.floor(Math.random() * 1000000000000 + 1);
+    //     urlId = decimalToBase62(randomNumber);
+    //   }
+    // }
 
     const base = "http://localhost:8000";
     // const urlId = uniqid();
     // validate the original url left
     if (origUrl) {
       try {
-        // if the same user have entered the same url
-        let url = await Url.findOne({ origUrl, email });
-        //  if different user have created the same url
-        let url2 = await Url.findOne({ origUrl });
-        if (url) {
-          res.json(url);
-        } else if (url2) {
-          // extracting necessary feilds from url2 and creating a new entery
-          const shortUrl = url2.shortUrl;
-          const urlId = url2.urlId;
-          url = new Url({
-            origUrl,
-            shortUrl,
-            urlId,
-            date: new Date(),
-            email,
-          });
-          await url.save();
-          res.json(url);
-        } else {
-          const shortUrl = `${base}/${urlId}`;
-          console.log(shortUrl);
-          url = new Url({
-            origUrl,
-            shortUrl,
-            urlId,
-            data: new Date(),
-            email,
-          });
-          await url.save();
-          res.json(url);
-        }
+        const shortUrl = `${base}/${urlId}`;
+        console.log(shortUrl);
+        url = new Url({
+          origUrl,
+          shortUrl,
+          urlId,
+          createdDate: new Date(),
+          email,
+        });
+        await url.save();
+        res.json(url);
       } catch (error) {
         console.log(error);
         res.status(500).json("server error");
@@ -195,6 +233,7 @@ const getUrl = async (req, res) => {
         { urlId: req.params.urlId },
         {
           $inc: { clicks: 1 },
+          lastVisit: new Date(),
         }
       );
       return res.redirect(url.origUrl);
@@ -247,25 +286,42 @@ const deleteLink = async (req, res) => {
 const checkUser = async (req, res, next) => {
   console.log("in check");
 
-  try {
-    const { token } = req.cookies;
-    let temp;
-    if (token) {
-      jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
-        if (err) {
-          res.status(401).json("unauthorized");
-        }
-        temp = user;
-        req.body.user = temp;
+  const { googleToken } = req.cookies;
+  if (googleToken) {
+    try {
+      const credentiaResponseDecode = jwtDecode(googleToken);
+      const { email, name } = credentiaResponseDecode;
+      let user = {
+        email,
+        name,
+      };
 
-        next();
-      });
-    } else {
-      res.status(401).json("unauthorized");
+      req.body.user = user;
+      next();
+    } catch (e) {
+      res.json({ error: "error while login11" });
     }
-  } catch (error) {
-    console.log("error while login");
-    return res.status(404).json(null);
+  } else {
+    try {
+      const { token } = req.cookies;
+      let temp;
+      if (token) {
+        jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
+          if (err) {
+            res.status(401).json("unauthorized");
+          }
+          temp = user;
+          req.body.user = temp;
+
+          next();
+        });
+      } else {
+        res.status(401).json("unauthorized");
+      }
+    } catch (error) {
+      console.log("error while login");
+      return res.status(404).json(null);
+    }
   }
 };
 
@@ -279,4 +335,5 @@ module.exports = {
   getAllUrl,
   deleteLink,
   checkUser,
+  googleLogin,
 };
