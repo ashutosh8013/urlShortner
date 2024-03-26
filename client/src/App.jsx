@@ -10,7 +10,7 @@ import { Toaster } from "react-hot-toast";
 import { UserContextProvider } from "../context/userContext";
 import Dashboard from "./pages/Dashboard";
 import Error from "./pages/error";
-axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.baseURL = "https://lively-dusk-a15a95.netlify.app/"
 axios.defaults.withCredentials = true;
 function App() {
   return (
