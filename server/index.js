@@ -19,5 +19,5 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors({ credentials: true,  origin: `https://ushort.netlify.app` }));
 app.use("/", require("./routes/authRoutes"));
 
-const port = 8000;
+const port = process.env.PORT;
 app.listen(port, () => console.log(`server is runnig on ${port}`));
