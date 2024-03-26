@@ -9,7 +9,7 @@ export default function Home() {
     setResult("Sending....");
     const formData = new FormData(event.target);
 
-    formData.append("access_key", "7fcb203b-2ec5-4960-82fc-e221c610f97f");
+    formData.append("access_key",import.meta.env.VITE_REACT_APP_ACCESS_KEY);
 
     const response = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
@@ -26,6 +26,7 @@ export default function Home() {
       setResult(data.message);
     }
   };
+  
   return (
     <>
       <div>
@@ -209,20 +210,33 @@ export default function Home() {
                     />
                     <p className="text-sm text-stone-400 mt-6">E-mail</p>{" "}
                     <input
-                      type="email" name="email"
+                      type="email"
+                      name="email"
                       className="border-b-2 border-stone-400 text-stone-400 w-36"
                     />
                   </div>
                   <div className="m-6 ">
                     <p className="text-sm text-stone-400">Phone</p>{" "}
-                    <input type="text" name="number" className="border-b-2 border-stone-400 text-stone-400 w-36" />
+                    <input
+                      type="text"
+                      name="number"
+                      className="border-b-2 border-stone-400 text-stone-400 w-36"
+                    />
                     <p className="text-sm text-stone-400 mt-6">Subject</p>{" "}
-                    <input type="text" name="subject" className="border-b-2 border-stone-400 text-stone-400 w-36" />
+                    <input
+                      type="text"
+                      name="subject"
+                      className="border-b-2 border-stone-400 text-stone-400 w-36"
+                    />
                   </div>
                 </div>
                 <div className="m-6 ">
                   <p className="text-sm text-stone-400 mt-6 ">Message</p>{" "}
-                  <input type="text" name="message" className="border-b-2 border-stone-400 text-stone-400 w-36" />
+                  <input
+                    type="text"
+                    name="message"
+                    className="border-b-2 border-stone-400 text-stone-400 w-36"
+                  />
                   <button type="submit">
                     {" "}
                     <div className="m-4 mt-6 pl-4 pt-1 pb-1 pr-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-3xl text-white font-medium w-36 ">
