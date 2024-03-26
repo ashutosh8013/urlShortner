@@ -2,9 +2,13 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import PieChart from "./PieChart";
+import Error from "./error";
 export default function Analysis({ url }) {
+
   const location = useLocation();
   const data = location.state;
+  if(!data)
+  return (<Error></Error>)
   //   console.log(data);
   let date = new Date(data.createdDate);
   let lastVisit = new Date(data.lastVisit);
@@ -147,11 +151,13 @@ export default function Analysis({ url }) {
             </div>
           </div>
         </div>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
       </div>
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      />
+     
     </>
   );
+
 }

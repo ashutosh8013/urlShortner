@@ -44,9 +44,9 @@ export default function Navbar() {
                   </Link>
                 )}
               </li>
-              <li className="hover:underline  underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-2 md:px-5">
+              {/* <li className="hover:underline  underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-2 md:px-5">
                 <Link to="/donate">Donate</Link>
-              </li>
+              </li> */}
             </ul>
           </div>
         </nav>
