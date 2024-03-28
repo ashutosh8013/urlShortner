@@ -16,7 +16,7 @@ app.use(useragent.express());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors({ credentials: true,  origin: `https://ushort.netlify.app` }));
+app.use(cors({ credentials: true, origin: `https://ul-one.vercel.app` }));
 app.use("/", require("./routes/authRoutes"));
 
 const port = process.env.PORT;
