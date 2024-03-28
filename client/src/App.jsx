@@ -10,7 +10,7 @@ import { Toaster } from "react-hot-toast";
 import { UserContextProvider } from "../context/userContext";
 import Dashboard from "./pages/Dashboard";
 import Error from "./pages/error";
-axios.defaults.baseURL = "https://urlshortner-ghtc.onrender.com/"
+axios.defaults.baseURL = "https://urlshortner-ghtc.onrender.com"
 axios.defaults.withCredentials = true;
 function App() {
   return (

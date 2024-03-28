@@ -78,7 +78,7 @@ export default function Login() {
                       }
                       console.log("in google");
                       setData({});
-                      await axios.get("/profile").then(({ data }) => {
+                      await axios.get("/profile,",{withCredentials:true}).then(({ data }) => {
                         setUser(data);
                       });
 
