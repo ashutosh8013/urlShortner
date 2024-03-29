@@ -16,7 +16,6 @@ const {
   getInfo,
 } = require("../controllers/authController");
 // middleware
-router.use(cors({ credentials: true,  origin: `https://ushort.netlify.app` }));
 
 router.get("/", test);
 router.post("/short", checkUser);
