@@ -25,7 +25,7 @@ export default function Register() {
       } else {
         // to reset the imput feilds
         setData({});
-        toast.success("login successfull. welcome");
+        toast.success("registered successfully.");
         // navigate to login page after successful login
         navigate("/login");
       }
