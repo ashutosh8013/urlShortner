@@ -1,4 +1,4 @@
-import rolling from "./rolling.svg"
+import rolling from "./rolling.svg";
 import React from "react";
 import { useContext } from "react";
 import { useState } from "react";
@@ -12,6 +12,9 @@ import { jwtDecode } from "jwt-decode";
 // when login with google
 
 export default function Login() {
+  const [isActive, setActive] = useState(false);
+
+ 
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [data, setData] = useState({ email: "", password: "" });
@@ -19,16 +22,20 @@ export default function Login() {
   const loginUser = async (e) => {
     e.preventDefault();
     const { email, password } = data;
+
     try {
+      setActive(true);
       const { data } = await axios.post("/login", {
         email,
         password,
       });
       if (data.error) {
+      
+        setActive(false);
         toast.error(data.error);
-      } else {
-        // set the data to empty because may be the user have logged in from another account
 
+        // set the data to empty because may be the user have logged in from another account
+      } else {
         setData({});
         sessionStorage.removeItem("googleToken");
         sessionStorage.setItem("token", data.token);
@@ -37,17 +44,25 @@ export default function Login() {
           .then(({ data }) => {
             setUser(data);
           });
-
+        setActive(false);
         navigate("/dashboard");
       }
-    } catch (error) {}
+    } catch (error) {
+    }
   };
-
+  
   return (
     <>
       {!user ? (
         <section class="bg-gray-50 dark:bg-gray-900 relative">
-          <img className="z-2 opacity-1 absolute flex justify-center items-center " src={rolling}></img>
+          <div
+            className={` -z-1 flex absolute  justify-center items-center  ${
+              isActive ? " opacity-1 w-full h-full" : " opacity-0 w-0 h-0"
+            }`}
+          >
+            <img className=" w-40 h-40" src={rolling}></img>
+          </div>
+
           <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
             <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
               <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -57,13 +72,15 @@ export default function Login() {
                 <GoogleLogin
                   onSuccess={async (credentialResponse) => {
                     const e = credentialResponse;
-
+                         setActive(true);
                     // const data = jwtDecode(e.credential);
                     // console.log(data);
+                  
                     try {
                       const { data } = await axios.post("/googleLogin", { e });
                       // console.log(data);
                       if (data.error) {
+                        setActive(false);
                         toast.error(data.error);
                         return;
                       }
@@ -78,11 +95,12 @@ export default function Login() {
                         .then(({ data }) => {
                           setUser(data);
                         });
-
+                         setActive(false);
                       navigate("/dashboard");
                     } catch (e) {
+                      setActive(false);
                       toast.error(e);
-                    }
+                    } 
                   }}
                   onError={() => {
                     console.log("Login Failed");
