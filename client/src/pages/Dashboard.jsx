@@ -188,7 +188,7 @@ export default function Dashboard() {
           </div>
           <div class="flex items-center justify-center ">
             <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
-              <p class="mx-auto max-w-2xl text-3xl font-bold tracking-tight pb-7 text-white  sm:text-4xl">
+              <p class="pl-2 sm:pl-0 mx-auto max-w-2xl text-3xl font-bold tracking-tight pb-7 text-white  sm:text-4xl">
                 click on the link to know more
               </p>
               <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
