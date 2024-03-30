@@ -142,7 +142,7 @@ const handleShort = async (req, res) => {
       if (url) {
         res.status(400).json("already exitddddd");
       } else {
-        const shortUrl = `http://localhost:8000/${custom}`;
+        const shortUrl = `https://urlshortner-ghtc.onrender.com/${custom}`;
         console.log("new url");
         const newUrl = new Url({
           origUrl,
@@ -196,7 +196,7 @@ const handleShort = async (req, res) => {
     //   }
     // }
 
-    const base = "http://localhost:8000";
+    const base = "https://urlshortner-ghtc.onrender.com";
     // const urlId = uniqid();
     // validate the original url left
     if (origUrl) {
