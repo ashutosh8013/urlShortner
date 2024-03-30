@@ -22,7 +22,6 @@ export default function Dashboard() {
     const url = e;
     console.log(url);
     navigate("/Analysis", { state: url });
-    
   };
 
   // delete the record
@@ -30,9 +29,23 @@ export default function Dashboard() {
     // console.log(e);
     const urlId = e.urlId;
     console.log(urlId);
-    const res = await axios
+    if (sessionStorage.getItem("token")) {
+      const res = await axios
+        .delete("/delete", {
+          data: { urlId, token: sessionStorage.getItem("token") },
+        })
+        .then(() => {
+          toast.success("link deleted successfuly");
+          setAllLinks(() => allLinks.filter((links) => links.urlId != e.urlId));
+        })
+        .catch(() => {
+          toast.error("error in deleting");
+        });
+    }
+    else if(sessionStorage.getItem("googleToken")){
+      const res = await axios
       .delete("/delete", {
-        data: { urlId },
+        data: { urlId, googleToken: sessionStorage.getItem("googleToken") },
       })
       .then(() => {
         toast.success("link deleted successfuly");
@@ -41,6 +54,7 @@ export default function Dashboard() {
       .catch(() => {
         toast.error("error in deleting");
       });
+    }
   };
   const create = async (e) => {
     setError(false);
@@ -50,12 +64,23 @@ export default function Dashboard() {
     try {
       // post request for creating url
       const email = user.email;
-      console.log("in frontend");
-      const url = await axios.post("/short", {
-        origUrl,
-        email,
-        custom,
-      });
+      console.log("in frontend11");
+      let url;
+      if (sessionStorage.getItem("token")) {
+        url = await axios.post("/short", {
+          origUrl,
+          email,
+          custom,
+          token: sessionStorage.getItem("token"),
+        });
+      } else if (sessionStorage.getItem("googleToken")) {
+        url = await axios.post("/short", {
+          origUrl,
+          email,
+          custom,
+          googleToken: sessionStorage.getItem("googleToken"),
+        });
+      }
 
       setShortUrl(url.data.shortUrl);
 
@@ -71,7 +96,17 @@ export default function Dashboard() {
 
   useEffect(() => {
     const getLinks = async () => {
-      const tempAllUrl = await axios.get("/getAllUrl");
+      let tempAllUrl;
+      if (sessionStorage.getItem("token")) {
+        tempAllUrl = await axios.post("/getAllUrl", {
+          token: sessionStorage.getItem("token"),
+        });
+      } else if (sessionStorage.getItem("googleToken")) {
+        tempAllUrl = await axios.post("/getAllUrl", {
+          googleToken: sessionStorage.getItem("googleToken"),
+        });
+      }
+
       // console.log(typeof tempAllUrl.data);
       try {
         // console.log(tempAllUrl.data);

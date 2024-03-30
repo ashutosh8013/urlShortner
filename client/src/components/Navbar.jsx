@@ -6,8 +6,8 @@ import { UserContext } from "../../context/userContext";
 export default function Navbar() {
   const { user, setUser } = useContext(UserContext);
   const logout = function () {
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "googleToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("googleToken");
     setUser(null);
   };
   return (

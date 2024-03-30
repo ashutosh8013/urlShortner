@@ -26,14 +26,13 @@ export default function PieChart({ desktop, mobile, otherDevices }) {
       },
     });
 
-
     return () => {
       if (chartInstance.current) chartInstance.current.destroy();
     };
   }, []);
   return (
     <div>
-      <canvas ref={chartRef} style={{ width: "300", height: "200" }}></canvas>
+      <canvas ref={chartRef} style={{ width: "300", height: "300" }}></canvas>
     </div>
   );
 }

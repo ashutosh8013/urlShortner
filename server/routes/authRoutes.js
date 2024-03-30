@@ -20,14 +20,14 @@ const {
 router.get("/", test);
 router.post("/short", checkUser);
 
-router.get("/getAllUrl", checkUser);
+router.post("/getAllUrl", checkUser);
 router.delete("/delete", checkUser);
-router.get("/profile", checkUser);
-router.get("/getAllUrl", getAllUrl);
+router.post("/profile", checkUser);
+router.post("/getAllUrl", getAllUrl);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/short", handleShort);
-router.get("/profile", getProfile);
+router.post("/profile", getProfile);
 router.delete("/delete", deleteLink);
 router.get("/:urlId", getUrl);
 router.post("/googleLogin", googleLogin);

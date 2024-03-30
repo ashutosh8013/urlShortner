@@ -7,7 +7,7 @@ export function UserContextProvider({ children }) {
     if (!user) {
       if (sessionStorage.getItem("token")) {
         axios
-          .get("/profile", {
+          .post("/profile", {
             token: sessionStorage.getItem("token"),
           })
           .then(({ data }) => {
@@ -16,8 +16,8 @@ export function UserContextProvider({ children }) {
           });
       } else if (sessionStorage.getItem("googleToken")) {
         axios
-          .get("/profile", {
-            googleToken: sessionStorage("googleToken"),
+          .post("/profile", {
+            googleToken: sessionStorage.getItem("googleToken"),
           })
           .then(({ data }) => {
             setUser(data);

@@ -4,11 +4,9 @@ import toast from "react-hot-toast";
 import PieChart from "./PieChart";
 import Error from "./error";
 export default function Analysis({ url }) {
-
   const location = useLocation();
   const data = location.state;
-  if(!data)
-  return (<Error></Error>)
+  if (!data) return <Error></Error>;
   //   console.log(data);
   let date = new Date(data.createdDate);
   let lastVisit = new Date(data.lastVisit);
@@ -60,8 +58,8 @@ export default function Analysis({ url }) {
 
   return (
     <>
-      <div class="flex items-center justify-center bg-gray-800 p-4 h-lvh">
-        <div class="flex flex-col mt-11 pt-8 sm:mt-0 sm:pt-0 max-w-7xl w-full md:w-[70%] relative ">
+      <div class="flex items-center h-100 justify-center bg-gray-800 p-4 sm:h-lvh">
+        <div class="flex flex-col mt-1 pt-18 sm:mt-0 sm:pt-0 max-w-7xl w-full md:w-[70%] relative ">
           <div class="bg-gray-700 shadow-lg rounded-xl flex items-start h-32 w-[90%] lg:w-1/2 justify-center py-4 px-8 mx-4 my-2">
             <div class="flex items-center justify-start w-full">
               <div class="flex-col w-[85%]">
@@ -139,7 +137,7 @@ export default function Analysis({ url }) {
               </div>
             </div>
 
-            <div className="sm:absolute sm:bottom-40 sm:right-10  sm:pr-25 sm: mr-12">
+            <div className=" lg:absolute lg:bottom-40 lg:right-10  lg:pr-25 lg: mr-12">
               <p class="text-3xl pl-16 font-bold text-gray-200">
                 clicks-{data.clicks}
               </p>
@@ -156,8 +154,6 @@ export default function Analysis({ url }) {
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
         />
       </div>
-     
     </>
   );
-
 }

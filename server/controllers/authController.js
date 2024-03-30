@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Url = require("../models/Url");
+
 const Variable = require("../models/var");
 const { jwtDecode } = require("jwt-decode");
 const {
@@ -65,13 +66,13 @@ const googleLogin = async (req, res) => {
     const user = await User.findOne({ email });
     console.log(user);
     if (user) {
-      res.cookie("googleToken", token).json(user);
+      res.json("successful in google login");
     } else {
       const user = await User.create({
         name,
         email,
       });
-      return res.cookie("googleToken", token).json(user);
+      return res.json("successful in google login");
     }
   } catch (e) {
     res.json({ error: "error in login" });
@@ -106,7 +107,7 @@ const loginUser = async (req, res) => {
         {},
         (err, token) => {
           if (err) throw err;
-          res.cookie("token", token).json(user);
+          res.json({ token });
         }
       );
     }
@@ -139,7 +140,7 @@ const handleShort = async (req, res) => {
     try {
       const url = await Url.findOne({ urlId: custom });
       if (url) {
-        res.status(400).json("already exit");
+        res.status(400).json("already exitddddd");
       } else {
         const shortUrl = `http://localhost:8000/${custom}`;
         console.log("new url");
@@ -236,6 +237,7 @@ const getUrl = async (req, res) => {
       );
 
       if (req.useragent.isMobile) {
+      
         await Url.updateOne(
           {
             urlId: req.params.urlId,
@@ -249,11 +251,7 @@ const getUrl = async (req, res) => {
           },
           { $inc: { desktop: 1 } }
         );
-      } else if (
-        req.useragent.isTablet ||
-        req.useragent.isiPad ||
-        req.useragent.isSmartTV
-      ) {
+      } else if (req.useragent.isiPad) {
         await Url.updateOne(
           {
             urlId: req.params.urlId,
@@ -303,16 +301,17 @@ const deleteLink = async (req, res) => {
       console.log(e);
     }
   } else {
-    res.status(401).json(null);
+    res.status(401).json("unauthorized");
   }
 };
 
 // check user is logged in or not
 const checkUser = async (req, res, next) => {
-  console.log("in check");
+  console.log("in check1");
 
-  const { googleToken } = req.cookies;
+  const { googleToken } = req.body;
   if (googleToken) {
+    console.log("inside googletoken1");
     try {
       const credentiaResponseDecode = jwtDecode(googleToken);
       const { email, name } = credentiaResponseDecode;
@@ -328,7 +327,7 @@ const checkUser = async (req, res, next) => {
     }
   } else {
     try {
-      const { token } = req.cookies;
+      const { token } = req.body;
       let temp;
       if (token) {
         jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
@@ -351,18 +350,15 @@ const checkUser = async (req, res, next) => {
 };
 
 // get info for a url
-const getInfo=async(req,res)=>{
-const url=req.body.url;
-const data= await Url.findOne({shortUrl:url});
-if(data.email==req.body.user.email)
-{
-res.json(data);
-}
-else
-{
-  res.status(401).json({error:"unauthorized"});
-}
-}
+const getInfo = async (req, res) => {
+  const url = req.body.url;
+  const data = await Url.findOne({ shortUrl: url });
+  if (data.email == req.body.user.email) {
+    res.json(data);
+  } else {
+    res.status(401).json({ error: "unauthorized" });
+  }
+};
 
 module.exports = {
   test,
@@ -375,5 +371,5 @@ module.exports = {
   deleteLink,
   checkUser,
   googleLogin,
-  getInfo
+  getInfo,
 };

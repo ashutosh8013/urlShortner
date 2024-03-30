@@ -14,23 +14,7 @@ export default function Login() {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [data, setData] = useState({ email: "", password: "" });
-  // when login with google
-  const googleLoginFun = async (e) => {
-    try {
-      const { data } = await axios.post("/googleLogin", { e });
-      if (data.error) {
-        toast.error(data.error);
-      }
-      console.log("in google");
-      setData({});
-      await axios.get("/profile").then(({ data }) => {
-        setUser(data);
-      });
-      navigate("/dashboard");
-    } catch (e) {
-      toast.error(e);
-    }
-  };
+
   const loginUser = async (e) => {
     e.preventDefault();
     const { email, password } = data;
@@ -45,9 +29,13 @@ export default function Login() {
         // set the data to empty because may be the user have logged in from another account
 
         setData({});
-        await axios.get("/profile").then(({ data }) => {
-          setUser(data);
-        });
+        sessionStorage.removeItem("googleToken");
+        sessionStorage.setItem("token", data.token);
+        await axios
+          .post("/profile", { token: sessionStorage.getItem("token") })
+          .then(({ data }) => {
+            setUser(data);
+          });
 
         navigate("/dashboard");
       }
@@ -75,12 +63,19 @@ export default function Login() {
                       console.log(data);
                       if (data.error) {
                         toast.error(data.error);
+                        return;
                       }
                       console.log("in google");
                       setData({});
-                      await axios.get("/profile").then(({ data }) => {
-                        setUser(data);
-                      });
+                      sessionStorage.removeItem("token");
+                      sessionStorage.setItem("googleToken", e.credential);
+                      await axios
+                        .post("/profile", {
+                          googleToken: sessionStorage.getItem("googleToken"),
+                        })
+                        .then(({ data }) => {
+                          setUser(data);
+                        });
 
                       navigate("/dashboard");
                     } catch (e) {
