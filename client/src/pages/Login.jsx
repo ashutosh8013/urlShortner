@@ -46,8 +46,8 @@ export default function Login() {
   return (
     <>
       {!user ? (
-        <section class="bg-gray-50 dark:bg-gray-900">
-          <img src={rolling}></img>
+        <section class="bg-gray-50 dark:bg-gray-900 relative">
+          <img className="z-2 opacity-1 absolute flex justify-center items-center " src={rolling}></img>
           <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
             <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
               <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -59,15 +59,15 @@ export default function Login() {
                     const e = credentialResponse;
 
                     // const data = jwtDecode(e.credential);
-                    console.log(data);
+                    // console.log(data);
                     try {
                       const { data } = await axios.post("/googleLogin", { e });
-                      console.log(data);
+                      // console.log(data);
                       if (data.error) {
                         toast.error(data.error);
                         return;
                       }
-                      console.log("in google");
+                      // console.log("in google");
                       setData({});
                       sessionStorage.removeItem("token");
                       sessionStorage.setItem("googleToken", e.credential);

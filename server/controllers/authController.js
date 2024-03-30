@@ -57,14 +57,14 @@ const registerUser = async (req, res) => {
 const googleLogin = async (req, res) => {
   const token = req.body.e.credential;
   try {
-    console.log(token);
+    // console.log(token);
     const credentiaResponseDecode = jwtDecode(token);
     // console.log(credentiaResponseDecode);
-    console.log("after");
+    // console.log("after");
     const { email, name } = credentiaResponseDecode;
-    console.log(email, name);
+    // console.log(email, name);
     const user = await User.findOne({ email });
-    console.log(user);
+    // console.log(user);
     if (user) {
       res.json("successful in google login");
     } else {
@@ -143,7 +143,7 @@ const handleShort = async (req, res) => {
         res.status(400).json("already exitddddd");
       } else {
         const shortUrl = `https://urlshortner-ghtc.onrender.com/${custom}`;
-        console.log("new url");
+        // console.log("new url");
         const newUrl = new Url({
           origUrl,
           email,
@@ -202,7 +202,7 @@ const handleShort = async (req, res) => {
     if (origUrl) {
       try {
         const shortUrl = `${base}/${urlId}`;
-        console.log(shortUrl);
+        // console.log(shortUrl);
         url = new Url({
           origUrl,
           shortUrl,
@@ -213,7 +213,7 @@ const handleShort = async (req, res) => {
         await url.save();
         res.json(url);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).json("server error");
       }
     } else {
@@ -224,7 +224,7 @@ const handleShort = async (req, res) => {
 
 // handle get request for shortUrl
 const getUrl = async (req, res) => {
-  console.log(req.useragent);
+  // console.log(req.useragent);
   try {
     const url = await Url.findOne({ urlId: req.params.urlId });
     if (url) {
@@ -270,7 +270,7 @@ const getUrl = async (req, res) => {
 };
 // getting all urls that a specific user had created
 const getAllUrl = async (req, res) => {
-  console.log("in getAllUrl");
+  // console.log("in getAllUrl");
   if (req.body.user) {
     try {
       const temp = req.body.user;
@@ -290,9 +290,9 @@ const getAllUrl = async (req, res) => {
 const deleteLink = async (req, res) => {
   // if we got user from the checkUser middleware
   if (req.body.user) {
-    console.log("in delete");
+    // console.log("in delete");
     const { urlId } = req.body;
-    console.log(urlId);
+    // console.log(urlId);
     try {
       await Url.deleteOne({ urlId })
         .then(() => res.status(200).json())
@@ -307,11 +307,11 @@ const deleteLink = async (req, res) => {
 
 // check user is logged in or not
 const checkUser = async (req, res, next) => {
-  console.log("in check1");
+  // console.log("in check1");
 
   const { googleToken } = req.body;
   if (googleToken) {
-    console.log("inside googletoken1");
+    // console.log("inside googletoken1");
     try {
       const credentiaResponseDecode = jwtDecode(googleToken);
       const { email, name } = credentiaResponseDecode;
