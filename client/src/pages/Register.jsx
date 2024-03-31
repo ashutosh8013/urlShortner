@@ -79,6 +79,7 @@ export default function Register() {
                 // console.log("in google");
                 setData({});
                 sessionStorage.removeItem("token");
+                sessionStorage.removeItem("googleToken");
                 sessionStorage.setItem("googleToken", e.credential);
                 await axios
                   .post("/profile", {
