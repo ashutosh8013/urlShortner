@@ -56,7 +56,7 @@ export default function Login() {
       {!user ? (
         <section class="bg-gray-50 dark:bg-gray-900 relative">
           <div
-            className={` -z-1 flex absolute  justify-center items-center  ${
+            className={` z-20 flex absolute  justify-center items-center  ${
               isActive ? " opacity-1 w-full h-full" : " opacity-0 w-0 h-0"
             }`}
           >

@@ -2,9 +2,15 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import "../style.css";
+import rolling from "./rolling.svg";
+import { useContext } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { UserContext } from "../../context/userContext";
 export default function Register() {
+  const { user, setUser } = useContext(UserContext);
+  const [isActive, setActive] = useState(false);
   const navigate = useNavigate();
   const [data, setData] = useState({
     name: "",
@@ -35,6 +41,13 @@ export default function Register() {
   };
   return (
     <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div
+        className={` z-20 flex absolute  justify-center items-center  ${
+          isActive ? " opacity-1 w-full h-full" : " opacity-0 w-0 h-0"
+        }`}
+      >
+        <img className=" w-40 h-40" src={rolling}></img>
+      </div>
       <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <img
           class="mx-auto h-10 w-auto"
@@ -48,6 +61,50 @@ export default function Register() {
 
       <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <GoogleLogin
+            onSuccess={async (credentialResponse) => {
+              const e = credentialResponse;
+              setActive(true);
+              // const data = jwtDecode(e.credential);
+              // console.log(data);
+
+              try {
+                const { data } = await axios.post("/googleLogin", { e });
+                // console.log(data);
+                if (data.error) {
+                  setActive(false);
+                  toast.error(data.error);
+                  return;
+                }
+                // console.log("in google");
+                setData({});
+                sessionStorage.removeItem("token");
+                sessionStorage.setItem("googleToken", e.credential);
+                await axios
+                  .post("/profile", {
+                    googleToken: sessionStorage.getItem("googleToken"),
+                  })
+                  .then(({ data }) => {
+                    setUser(data);
+                  });
+                setActive(false);
+                navigate("/dashboard");
+              } catch (e) {
+                setActive(false);
+                toast.error(e);
+              }
+            }}
+            onError={() => {
+              console.log("Login Failed");
+            }}
+          />
+
+          <br></br>
+          <hr></hr>
+          <br></br>
+          <h1 class="text-xl flex justify-center leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            OR
+          </h1>
           <form onSubmit={registerUser}>
             <div>
               <label

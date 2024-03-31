@@ -7,7 +7,7 @@ import React from "react";
 import axios from "axios";
 import rolling from "./rolling.svg";
 import { UserContext } from "../../context/userContext";
-import Error from "./error";
+import DashboardError from "./DashboardError";
 
 export default function Dashboard() {
   const [isActive, setActive] = useState(false);
@@ -264,7 +264,7 @@ export default function Dashboard() {
   else
     return (
       <>
-        <Error></Error>
+        <DashboardError></DashboardError>
       </>
     );
 }
