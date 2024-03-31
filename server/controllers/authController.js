@@ -143,7 +143,7 @@ const handleShort = async (req, res) => {
         res.status(400).json("already exitddddd");
       } else {
         const shortUrl = `https://urlshortner-ghtc.onrender.com/${custom}`;
-        // console.log("new url");
+
         const newUrl = new Url({
           origUrl,
           email,
@@ -153,6 +153,7 @@ const handleShort = async (req, res) => {
         });
         await newUrl.save();
         res.json(newUrl);
+        return;
       }
     } catch (e) {
       console.log(e);
@@ -163,6 +164,8 @@ const handleShort = async (req, res) => {
 
     if (url) {
       res.json(url);
+      
+      return;
     }
     let randomNumber;
     const counter = await Variable.findOne({ name: "counter" });
@@ -183,21 +186,10 @@ const handleShort = async (req, res) => {
     }
 
     let urlId = decimalToBase62(randomNumber);
-    // base url
-    // console.log("int the call");
-    // while (true) {
-    //   // check if that urlId already exit in db or not
-    //   let check = await Url.findOne({ urlId });
-    //   if (!check) break;
-    //   else {
-    //     // if exist create a new urlId
-    //     randomNumber = Math.floor(Math.random() * 1000000000000 + 1);
-    //     urlId = decimalToBase62(randomNumber);
-    //   }
-    // }
+
 
     const base = "https://urlshortner-ghtc.onrender.com";
-    // const urlId = uniqid();
+    
     // validate the original url left
     if (origUrl) {
       try {
@@ -212,12 +204,14 @@ const handleShort = async (req, res) => {
         });
         await url.save();
         res.json(url);
+        return;
       } catch (error) {
-        // console.log(error);
-        res.status(500).json("server error");
+        console.log(error);
+        console.log("error in line 217");
       }
     } else {
       res.status(400).json("invalid original url");
+  
     }
   }
 };
@@ -226,7 +220,9 @@ const handleShort = async (req, res) => {
 const getUrl = async (req, res) => {
   // console.log(req.useragent);
   try {
+    
     const url = await Url.findOne({ urlId: req.params.urlId });
+    
     if (url) {
       await Url.updateOne(
         { urlId: req.params.urlId },
@@ -237,7 +233,6 @@ const getUrl = async (req, res) => {
       );
 
       if (req.useragent.isMobile) {
-      
         await Url.updateOne(
           {
             urlId: req.params.urlId,
@@ -261,7 +256,7 @@ const getUrl = async (req, res) => {
       }
       return res.redirect(url.origUrl);
     } else {
-      res.status(404).json("not found");
+      res.status(404).json("not foundjjjjj");
     }
   } catch (err) {
     console.log(err);

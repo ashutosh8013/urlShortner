@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import React from "react";
 import axios from "axios";
+import rolling from "./rolling.svg";
 import { UserContext } from "../../context/userContext";
 import Error from "./error";
 
 export default function Dashboard() {
+  const [isActive, setActive] = useState(false);
   const { user } = useContext(UserContext);
   const [origUrl, setOrigUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
@@ -41,31 +43,31 @@ export default function Dashboard() {
         .catch(() => {
           toast.error("error in deleting");
         });
-    }
-    else if(sessionStorage.getItem("googleToken")){
+    } else if (sessionStorage.getItem("googleToken")) {
       const res = await axios
-      .delete("/delete", {
-        data: { urlId, googleToken: sessionStorage.getItem("googleToken") },
-      })
-      .then(() => {
-        toast.success("link deleted successfuly");
-        setAllLinks(() => allLinks.filter((links) => links.urlId != e.urlId));
-      })
-      .catch(() => {
-        toast.error("error in deleting");
-      });
+        .delete("/delete", {
+          data: { urlId, googleToken: sessionStorage.getItem("googleToken") },
+        })
+        .then(() => {
+          toast.success("link deleted successfuly");
+          setAllLinks(() => allLinks.filter((links) => links.urlId != e.urlId));
+        })
+        .catch(() => {
+          toast.error("error in deleting");
+        });
     }
   };
   const create = async (e) => {
     setError(false);
     setShortUrl("");
+    setActive(true);
     e.preventDefault();
     console.log("in create");
     try {
       // post request for creating url
       const email = user.email;
       console.log("in frontend11");
-      let url;
+      let url="";
       if (sessionStorage.getItem("token")) {
         url = await axios.post("/short", {
           origUrl,
@@ -89,6 +91,8 @@ export default function Dashboard() {
       // show the shorturl
     } catch (error) {
       setError(true);
+    } finally {
+      setActive(false);
     }
   };
 
@@ -123,10 +127,17 @@ export default function Dashboard() {
   if (user)
     return (
       <>
-        <div class="flex  items-center flex-col sm:flex-row justify-center min-h-screen from-purple-200 via-purple-300 to-purple-500 bg-gradient-to-br">
+        <div class="flex relative items-center flex-col sm:flex-row justify-center min-h-screen from-purple-200 via-purple-300 to-purple-500 bg-gradient-to-br">
           <div>
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
               <div class="relative isolate overflow-hidden  px-6 py-20 text-center sm:px-16 sm:shadow-sm">
+                <div
+                  className={` z-20 flex absolute  justify-center items-center  ${
+                    isActive ? " opacity-1 w-full h-full" : " opacity-0 w-0 h-0"
+                  }`}
+                >
+                  <img className=" w-40 h-40" src={rolling}></img>
+                </div>
                 <p class="mx-auto max-w-2xl text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                   Enter your URL
                 </p>
@@ -189,7 +200,7 @@ export default function Dashboard() {
           <div class="flex items-center justify-center ">
             <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
               <p class="pl-2 sm:pl-0 mx-auto max-w-2xl text-3xl font-bold tracking-tight pb-7 text-white  sm:text-4xl">
-                click on the link for Analysis
+                click on the link to know more
               </p>
               <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
                 {allLinks && (

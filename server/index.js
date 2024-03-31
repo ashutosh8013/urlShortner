@@ -7,10 +7,14 @@ const app = express();
 const Url = require("./models/Url");
 var useragent = require("express-useragent");
 // database connection
-mongoose
+async function dbconnect(){
+ await mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log("database connect"))
   .catch((e) => console.log("database not connected", e));
+}
+
+dbconnect();
 // middleware
 app.use(cors({ credentials: true,  origin: `https://ul-one.vercel.app` }));
 app.use(useragent.express());

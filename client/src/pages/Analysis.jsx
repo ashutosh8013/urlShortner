@@ -60,7 +60,7 @@ export default function Analysis({ url }) {
     <>
       <div class="flex items-center h-100 justify-center bg-gray-800 p-4 sm:h-lvh">
         <div class="flex flex-col mt-1 pt-18 sm:mt-0 sm:pt-0 max-w-7xl w-full md:w-[70%] relative ">
-          <div class="bg-gray-700 shadow-lg rounded-xl flex items-start h-32 w-[90%] lg:w-1/2 justify-center py-4 px-8 mx-4 my-2">
+          <div class="bg-gray-700 shadow-lg rounded-xl flex items-start h-32 w-[90%] lg:w-1/2 justify-center py-4 px-8 mx-4 my-2 overflow-clip">
             <div class="flex items-center justify-start w-full">
               <div class="flex-col w-[85%]">
                 <div class="text-xl  font-medium relative text-violet-600 my-0">
@@ -96,7 +96,11 @@ export default function Analysis({ url }) {
                 </div>
                 <div class="class pb-3 flex items-center overflow-hidden">
                   <div class="text-3xl  font-bold text-gray-200">
-                    <a className="hover:cursor-pointer" href={data.shortUrl}>
+                    <a
+                      target="_blank"
+                      className="hover:cursor-pointer"
+                      href={data.shortUrl}
+                    >
                       {data.shortUrl}
                     </a>
                   </div>
