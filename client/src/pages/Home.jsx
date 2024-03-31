@@ -9,7 +9,7 @@ export default function Home() {
     setResult("Sending....");
     const formData = new FormData(event.target);
 
-    formData.append("access_key",import.meta.env.VITE_REACT_APP_ACCESS_KEY);
+    formData.append("access_key", import.meta.env.VITE_REACT_APP_ACCESS_KEY);
 
     const response = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
@@ -26,7 +26,7 @@ export default function Home() {
       setResult(data.message);
     }
   };
-  
+
   return (
     <>
       <div>
@@ -51,23 +51,7 @@ export default function Home() {
               Effortlessly create your short URL with only few clicks & Analyze
               your short URL engagements with our analytics features
             </p>
-            <div className="space-x-3 mt-6 md:mt-4">
-              <a href="#">
-                {" "}
-                <i className="fa-brands fa-facebook-f bg-blue-600 hover:text-blue-500 hover:bg-white rounded-full px-3 py-[11px] w-9 h-9 text-center "></i>
-              </a>
-              <a href="#">
-                {" "}
-                <i className="fa-brands fa-twitter bg-blue-600 hover:text-red-500 hover:bg-white rounded-full px-[10px] py-[11px] w-9 h-9 text-center"></i>
-              </a>
-              <a href="#">
-                {" "}
-                <i className="fa-brands fa-linkedin bg-blue-600 hover:text-yellow-500 hover:bg-white rounded-full px-3 py-[11px] w-9 h-9 text-center"></i>
-              </a>{" "}
-              <a href="#">
-                <i className="fa-brands fa-chrome bg-blue-600 hover:text-indigo-600 hover:bg-white rounded-full px-[10px] py-[11px] w-9 h-9 text-center"></i>
-              </a>
-            </div>
+
             <div className="flex mt-10 space-x-5">
               <a
                 target="_blank"
