@@ -15,9 +15,13 @@ steps to run this project in your system
 
 1) clone it
 2) make a env file in server folder
-3) add
+3) add in the backend
  MONGO_URL="link for your db"
 JWT_SECRET=secretKeyforjwt
-
+4) int the front end 
+   VITE_REACT_APP_GOOGLE_ID
+   VITE_REACT_APP_ACCESS_KEY
 
 i have used mongodb atlas for this, you can use the same
+
+
