@@ -8,7 +8,6 @@ import axios from "axios";
 import rolling from "./rolling.svg";
 import { UserContext } from "../../context/userContext";
 import DashboardError from "./DashboardError";
-
 export default function Dashboard() {
   const [isActive, setActive] = useState(false);
   const { user } = useContext(UserContext);

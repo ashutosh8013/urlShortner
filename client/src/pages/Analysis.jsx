@@ -4,10 +4,12 @@ import toast from "react-hot-toast";
 import PieChart from "./PieChart";
 import Error from "./error";
 export default function Analysis({ url }) {
+  // location to get the data which i am sending through navigate
   const location = useLocation();
   const data = location.state;
+  // if there is no data the user can't access the analysis page
   if (!data) return <Error></Error>;
-  //   console.log(data);
+
   let date = new Date(data.createdDate);
   let lastVisit = new Date(data.lastVisit);
   Date.prototype.toShortFormat = function () {
@@ -39,10 +41,8 @@ export default function Analysis({ url }) {
   // Now any Date object can be declared
   let anyDate = new Date(date);
 
-  // and it can represent itself in the custom format defined above.
   let createdDate = anyDate.toShortFormat();
   let lastVisitDate = lastVisit.toShortFormat();
-  //   console.log(lastVisitDate);
   // copy the  url to clipboard
   function copy(e) {
     var text = e;

@@ -26,6 +26,8 @@ export function UserContextProvider({ children }) {
       }
     }
   }, []);
+// this useContext will help me to get the username all over the frontend 
+// i am using user and setuser all over the frontend 
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {console.log("in body of context")}

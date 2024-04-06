@@ -5,9 +5,10 @@ import { useContext } from "react";
 import { UserContext } from "../../context/userContext";
 export default function Navbar() {
   const { user, setUser } = useContext(UserContext);
+  // detete the tokens when logout
   const logout = function () {
-      sessionStorage.removeItem("token");
-      sessionStorage.removeItem("googleToken");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("googleToken");
     setUser(null);
   };
   return (
@@ -44,9 +45,6 @@ export default function Navbar() {
                   </Link>
                 )}
               </li>
-              {/* <li className="hover:underline  underline-offset-4 decoration-2 decoration-white py-2 rounded-lg px-2 md:px-5">
-                <Link to="/donate">Donate</Link>
-              </li> */}
             </ul>
           </div>
         </nav>
