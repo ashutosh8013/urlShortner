@@ -114,7 +114,7 @@ export default function Analysis({ url }) {
               <div class="flex items-center justify-start w-full">
                 <div class="flex-col w-[85%]">
                   <div class="text-xl font-medium text-violet-600 my-2">
-                    cretaed Date
+                    created Date
                   </div>
                   <div class="class flex items-center">
                     <div class="text-3xl font-bold text-gray-200">
